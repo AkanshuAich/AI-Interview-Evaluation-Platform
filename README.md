@@ -194,21 +194,46 @@ AI-Interview-Platform/
 
 ## Deployment
 
-### Backend Deployment (Render/Railway)
+### Quick Deploy to Render (Free)
 
-1. Create a new web service
-2. Connect your GitHub repository
-3. Configure build settings:
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-4. Add environment variables (DATABASE_URL, SECRET_KEY, LLM_API_KEY, CORS_ORIGINS)
-5. Create PostgreSQL database and link to service
+The easiest way to deploy this application is using **Render**, which supports both frontend and backend on one platform.
 
-### Frontend Deployment (Vercel/Netlify)
+**Quick Steps:**
 
-1. Build the project: `npm run build`
-2. Deploy the `dist` folder
-3. Configure environment variable: `VITE_API_BASE_URL` (production backend URL)
+1. **Push code to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin https://github.com/yourusername/ai-interview-platform.git
+   git push -u origin main
+   ```
+
+2. **Deploy on Render**
+   - Sign up at https://render.com (free)
+   - Click "New +" → "Blueprint"
+   - Connect your GitHub repository
+   - Render will auto-detect `render.yaml` and deploy everything
+   - Add your `LLM_API_KEY` in the backend environment variables
+
+3. **Done!** Your app will be live at:
+   - Frontend: `https://your-app-frontend.onrender.com`
+   - Backend: `https://your-app-backend.onrender.com`
+
+**📖 For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+### What Gets Deployed:
+- ✅ Backend API (FastAPI + Python)
+- ✅ Frontend (React + Vite)
+- ✅ PostgreSQL Database
+- ✅ Automatic SSL certificates
+- ✅ Auto-deploy on git push
+
+### Free Tier Includes:
+- 750 hours/month web service
+- Unlimited static sites
+- 1GB PostgreSQL database
+- Note: Backend spins down after 15 min inactivity (30-60s cold start)
 
 ## Development Workflow
 
