@@ -36,7 +36,6 @@ services:
   - type: web
     name: ai-interview-frontend
     env: static
-    region: oregon
     plan: free
     branch: main
     rootDir: frontend
