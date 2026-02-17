@@ -10,12 +10,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Fix DATABASE_URL for async driver
+# Render provides postgresql:// but we need postgresql+asyncpg://
+database_url = settings.DATABASE_URL
+if database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # Create async engine with connection pooling
 # pool_size: number of connections to maintain
 # max_overflow: additional connections that can be created when pool is exhausted
 # pool_pre_ping: verify connections before using them
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    database_url,
     echo=False,  # Set to True for SQL query logging in development
     pool_size=20,
     max_overflow=10,
