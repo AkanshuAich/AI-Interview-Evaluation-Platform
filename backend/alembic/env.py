@@ -23,8 +23,14 @@ from app.models import User, Interview, Question, Answer, Evaluation
 # Alembic Config object
 config = context.config
 
+# Fix DATABASE_URL for async driver
+# Render provides postgresql:// but we need postgresql+asyncpg://
+database_url = settings.DATABASE_URL
+if database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # Override sqlalchemy.url with our settings
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging
 if config.config_file_name is not None:
@@ -40,6 +46,11 @@ def run_migrations_offline() -> None:
     This configures the context with just a URL and not an Engine.
     """
     url = config.get_main_option("sqlalchemy.url")
+    
+    # Fix DATABASE_URL for async driver if needed
+    if url and url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -65,7 +76,14 @@ async def run_async_migrations() -> None:
     Creates an Engine and associates a connection with the context.
     """
     configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = settings.DATABASE_URL
+    
+    # Fix DATABASE_URL for async driver
+    # Render provides postgresql:// but we need postgresql+asyncpg://
+    database_url = settings.DATABASE_URL
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    
+    configuration["sqlalchemy.url"] = database_url
     
     connectable = async_engine_from_config(
         configuration,
