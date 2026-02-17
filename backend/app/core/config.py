@@ -3,7 +3,9 @@ Configuration management for the AI Interview Platform.
 Loads settings from environment variables with sensible defaults.
 """
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Union
+from pydantic import field_validator
+import json
 
 
 class Settings(BaseSettings):
@@ -23,12 +25,24 @@ class Settings(BaseSettings):
     LLM_API_URL: str = "https://api.openai.com/v1/chat/completions"
     LLM_MODEL: str = "gpt-4"
     
-    # CORS configuration
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://localhost:3000"]
+    # CORS configuration - can be a JSON string or list
+    CORS_ORIGINS: Union[List[str], str] = ["http://localhost:5173", "http://localhost:3000"]
     
     # Application settings
     PROJECT_NAME: str = "AI Interview Platform"
     VERSION: str = "1.0.0"
+    
+    @field_validator('CORS_ORIGINS', mode='before')
+    @classmethod
+    def parse_cors_origins(cls, v):
+        """Parse CORS_ORIGINS from JSON string if needed."""
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # If it's a single URL string, wrap it in a list
+                return [v]
+        return v
     
     class Config:
         env_file = ".env"

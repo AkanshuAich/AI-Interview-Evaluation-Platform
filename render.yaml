@@ -29,7 +29,7 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 30
       - key: CORS_ORIGINS
-        value: '["https://ai-interview-frontend.onrender.com"]'
+        value: '["https://ai-interview-frontend-yc7a.onrender.com"]'
     healthCheckPath: /
 
   # Frontend Static Site
