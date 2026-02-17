@@ -36,7 +36,6 @@ services:
   - type: web
     name: ai-interview-frontend
     env: static
-    plan: free
     branch: main
     rootDir: frontend
     buildCommand: npm install && npm run build
